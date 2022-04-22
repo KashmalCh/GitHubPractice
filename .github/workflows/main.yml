@@ -24,9 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: my-artifact
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
@@ -37,4 +34,8 @@ jobs:
         run: |
           pip install sqlfluff
           sqlfluff fix -f linter_testing.sql
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
           
