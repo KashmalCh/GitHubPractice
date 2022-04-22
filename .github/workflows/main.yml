@@ -33,5 +33,5 @@ jobs:
       - name: Run a multi-line script
         run: |
           pip install sqlfluff
-          sqlfluff fix linter_testing.sql
+          sqlfluff fix -f linter_testing.sql
           
