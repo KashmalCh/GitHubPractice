@@ -1,35 +1,32 @@
-name: testingFile
-
-# Controls when the workflow will run
+name: sqlfluff with reviewdog
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-#  push:
-#   branches: [ master ]
-#  pull_request:
-#    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  pull_request:
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  test-check:
+    name: runner / sqlfluff (github-check)
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - uses: actions/checkout@v2
+      # only run when a comment requests linting
+      - uses: khan/pull-request-comment-trigger@master
+        id: check
+        with:
+          trigger: '/lint'
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      - uses: yu-iskw/action-sqlfluff@v3
+        if: steps.check.outputs.triggered == 'true'
+        id: lint-sql
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          sqlfluff_version: "0.11.1"
+          sqlfluff_command: "fix" # Or "lint"
+          config: "${{ github.workspace }}/.sqlfluff"
+          paths: '${{ github.workspace }}/models'
+      - name: 'Show outputs (Optional)'
+        shell: bash
         run: |
-          pip install sqlfluff
-          sqlfluff fix -f linter_testing.sql
-          
+          echo '${{ steps.lint-sql.outputs.sqlfluff-results }}' | jq -r '.'
+          echo '${{ steps.lint-sql.outputs.sqlfluff-results-rdjson }}' | jq -r '.'
