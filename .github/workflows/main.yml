@@ -35,7 +35,3 @@ jobs:
           pip install sqlfluff
           sqlfluff fix -f linter_testing.sql
           
-      - uses: actions/download-artifact@v3
-        with:
-          name: my-artifact
-          
