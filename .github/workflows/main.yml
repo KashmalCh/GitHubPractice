@@ -24,7 +24,7 @@ jobs:
           sqlfluff_version: "0.11.1"
           sqlfluff_command: "fix" # Or "lint"
           config: "${{ github.workspace }}/.sqlfluff"
-          paths: '${{ github.workspace }}fix.sql'
+          paths: '${{ github.workspace }}fixer.sql'
       - name: 'Show outputs (Optional)'
         shell: bash
         run: |
