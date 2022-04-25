@@ -1,4 +1,4 @@
 select
-a
-,b
+    a,
+    b
 from table
