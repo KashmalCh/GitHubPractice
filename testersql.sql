@@ -88,4 +88,4 @@ concat(
 current_datetime("America/Chicago") as CreatedDateTime,
 current_datetime("America/Chicago") as ModifiedDateTime
 from
-{{ref('ecomm_store_stitch_ga_session_stg')}}
+    {{ref('ecomm_store_stitch_ga_session_stg')}}
