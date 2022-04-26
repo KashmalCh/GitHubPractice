@@ -1,1 +1,5 @@
-SELECT a as name,b as class, c AS age FROM table where age<10 order by age
+SELECT
+    a AS name,
+    b AS class,
+    c AS age
+FROM table WHERE age < 10 ORDER BY age
