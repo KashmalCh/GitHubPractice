@@ -88,4 +88,4 @@ select
     current_datetime("America/Chicago") as CreatedDateTime,
     current_datetime("America/Chicago") as ModifiedDateTime
 from
-ecomm_store_stitch_ga_session
+    Ecomm_Store_Stitch_Ga_Session
