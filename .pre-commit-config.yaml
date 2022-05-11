@@ -1,0 +1,8 @@
+repos:
+- repo: https://github.com/KashmalCh/GitHubPractice
+  rev: 0.13.1
+  hooks:
+    - id: sqlfluff-fix
+      # Arbitrary arguments to show an example
+       args: [--rules, "L003,L014"]
+      # additional_dependencies: ['<dbt-adapter>', 'sqlfluff-templater-dbt']
