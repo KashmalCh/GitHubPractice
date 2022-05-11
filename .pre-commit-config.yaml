@@ -4,5 +4,5 @@ repos:
   hooks:
     - id: sqlfluff-fix
       # Arbitrary arguments to show an example
-       args: [--rules, "L003,L014"]
+      args: [--rules, "L003,L014"]
       # additional_dependencies: ['<dbt-adapter>', 'sqlfluff-templater-dbt']
