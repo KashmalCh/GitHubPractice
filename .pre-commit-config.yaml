@@ -3,6 +3,12 @@ repos:
   rev: 0.13.1
   hooks:
     - id: sqlfluff-fix
-      # Arbitrary arguments to show an example
-      args: [--rules, "L003,L014"]
-      # additional_dependencies: ['<dbt-adapter>', 'sqlfluff-templater-dbt']
+      name: sqlfluff-fix
+      # Needs to use "--force" to disable confirmation
+      # By default all the rules are applied
+      entry: sqlfluff fix --force
+      language: python
+      description: 'Fixes sql lint errors with `SQLFluff`'
+      types: [sql]
+      require_serial: true
+      additional_dependencies: []
