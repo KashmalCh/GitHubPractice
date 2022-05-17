@@ -451,4 +451,4 @@ THEN
   WHERE ConfigName = 'RecommenderLogMainRecommendations';
     
 
- END;
+end;
