@@ -298,91 +298,94 @@ THEN
 
 
 	DROP TABLE IF EXISTS _SESSION.RecommendationsDataVariantTemp;
-	CREATE TEMP TABLE RecommendationsDataVariantTemp AS
-	SELECT
-	  DISTINCT RecommenderLogId,
-	  RecommendationOrder,
-	  RecommendationItem,
-	  RecommenderationRank,
-	  CAST(json_extract_scalar(var,
-		  '$.size') AS STRING) AS MattressSize,
-	  CAST(json_extract_scalar(var,
-		  '$.variantId') AS STRING) AS VariantId,
-	  CAST(json_extract_scalar(var,
-		  '$.olpPrice') AS NUMERIC) AS OLPPrice,
-	  CAST(json_extract_scalar(var,
-		  '$.salesPrice') AS NUMERIC) AS SalesPrice,
-	  LastModifiedOn,
-	  D365ProductID,
-	  AX2012ProductID,
-	  Sku,
-	  CAST(json_extract_scalar(var,
-			'$.d365RecordId') AS STRING) AS D365RecordId,
-	  'DAG - load-recommenderlog-customerprofile-data-to-bq-v1.0' AS CreatedBy,
-	  'DAG - load-recommenderlog-customerprofile-data-to-bq-v1.0' AS ModifiedBy,
-	  CURRENT_DATETIME('America/Chicago') AS CreatedDatetime,
-	  CURRENT_DATETIME('America/Chicago') AS ModifiedDatetime
-	FROM (
-	  WITH
-		json_array_table AS (
-		SELECT
-		  RecommenderLogId,
-		  LastModifiedOn,
-		  json_text AS a,
-		  CustomerResponses
-		FROM
-		  `prod-mattressfinder-project.mattressfinder_staging_data.mf_recommender_log_cdc_data_stg` rlstg3
-		LEFT JOIN
-		  UNNEST(COALESCE((JSON_EXTRACT_ARRAY(JSON_EXTRACT(ResponsePayload,
-				'$.RecommendedProduct'))),(JSON_EXTRACT_ARRAY(JSON_EXTRACT(ResponsePayload,
-				'$.recommendedProduct'))))) AS json_text
-		WHERE
-		  CAST(rlstg3.LastModifiedDate AS DATE)>CAST('2021-03-30' AS DATE) ),
-		json_array_element_table AS (
-		SELECT
-		  RecommenderLogId,
-		  LastModifiedOn,
-		  a,
-		  CustomerResponses,
-		  ROW_NUMBER() OVER (PARTITION BY RecommenderLogId,LOWER(COALESCE(CAST(json_extract_scalar(a,
-        '$.IsAvailableToTryInStore') AS STRING),CAST(json_extract_scalar(a,
-        '$.isAvailableToTryInStore') AS STRING))) ) AS array_idx
-		FROM
-		  json_array_table )
-	  SELECT
-		DISTINCT CAST(json_EXTRACT(a,
-			'$.VariantId') AS STRING) AS VariantId,
-		RecommenderLogId,
-		array_idx AS RecommendationOrder,
-		COALESCE(COALESCE(COALESCE(json_extract_scalar(a,
-		  '$.Sku'),json_extract_scalar(a,
-		  '$.SKU') ),json_extract_scalar(a,
-		  '$.sku')),json_extract_scalar(a,
-		  '$.AX2012ProductID')) AS RecommendationItem,
-		LastModifiedOn AS LastModifiedOn,
-		json_extract_scalar(a,
-		  '$.Rank') AS RecommenderationRank,
-		CAST(json_extract_scalar(a,
-			'$.D365ProductID') AS STRING) AS D365ProductID,
-		json_extract_scalar(a,
-		  '$.AX2012ProductID') AS AX2012ProductID,
-		COALESCE(COALESCE(json_extract_scalar(a,
-		  '$.Sku'),json_extract_scalar(a,
-		  '$.SKU') ),json_extract_scalar(a,
-		  '$.sku')) AS Sku
-	  FROM
-		json_array_element_table)A
-	LEFT JOIN
-	  UNNEST(JSON_EXTRACT_ARRAY(VariantId)) var
-	WHERE
-	  RecommenderLogId NOT IN (
-	  SELECT
-		DISTINCT recItems.RecommenderLogId
-	  FROM
-		`prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant` recItems)
-	ORDER BY
-	  1,
-	  2 ;
+create temp table RecommendationsDataVariantTemp as
+select distinct
+	RecommenderLogId,
+	RecommendationOrder,
+	RecommendationItem,
+	RecommenderationRank,
+	cast(json_extract_scalar(var,
+			'$.size') as string) as MattressSize,
+	cast(json_extract_scalar(var,
+			'$.variantId') as string) as VariantId,
+	cast(json_extract_scalar(var,
+			'$.olpPrice') as numeric) as OLPPrice,
+	cast(json_extract_scalar(var,
+			'$.salesPrice') as numeric) as SalesPrice,
+	LastModifiedOn,
+	D365ProductID,
+	AX2012ProductID,
+	Sku,
+	cast(json_extract_scalar(var,
+			'$.d365RecordId') as string) as D365RecordId,
+	'DAG - load-recommenderlog-customerprofile-data-to-bq-v1.0' as CreatedBy,
+	'DAG - load-recommenderlog-customerprofile-data-to-bq-v1.0' as ModifiedBy,
+	current_datetime('America/Chicago') as CreatedDatetime,
+	current_datetime('America/Chicago') as ModifiedDatetime
+from (
+		with
+		json_array_table as (
+			select
+				RecommenderLogId,
+				LastModifiedOn,
+				json_text as a,
+				CustomerResponses
+			from
+				`prod-mattressfinder-project.mattressfinder_staging_data.mf_recommender_log_cdc_data_stg` rlstg3
+			left join
+				unnest(coalesce((json_extract_array(json_extract(ResponsePayload,
+					'$.RecommendedProduct'))), (json_extract_array(json_extract(ResponsePayload,
+					'$.recommendedProduct'))))) as json_text
+			where
+				cast(rlstg3.LastModifiedDate as date) > cast('2021-03-30' as date) 
+		),
+
+		json_array_element_table as (
+			select
+				RecommenderLogId,
+				LastModifiedOn,
+				a,
+				CustomerResponses,
+				row_number() over (partition by RecommenderLogId, lower(coalesce(cast(json_extract_scalar(a,
+					'$.IsAvailableToTryInStore') as string), cast(json_extract_scalar(a,
+					'$.isAvailableToTryInStore') as string))) ) as array_idx
+			from
+				json_array_table 
+		)
+
+		select distinct
+			cast(json_extract(a,
+				'$.VariantId') as string) as VariantId,
+			RecommenderLogId,
+			array_idx as RecommendationOrder,
+			coalesce(coalesce(coalesce(json_extract_scalar(a,
+				'$.Sku'), json_extract_scalar(a,
+				'$.SKU') ), json_extract_scalar(a,
+				'$.sku')), json_extract_scalar(a,
+				'$.AX2012ProductID')) as RecommendationItem,
+			LastModifiedOn as LastModifiedOn,
+			json_extract_scalar(a,
+				'$.Rank') as RecommenderationRank,
+			cast(json_extract_scalar(a,
+				'$.D365ProductID') as string) as D365ProductID,
+			json_extract_scalar(a,
+				'$.AX2012ProductID') as AX2012ProductID,
+			coalesce(coalesce(json_extract_scalar(a,
+				'$.Sku'), json_extract_scalar(a,
+				'$.SKU') ), json_extract_scalar(a,
+				'$.sku')) as Sku
+		from
+			json_array_element_table)A
+left join
+	unnest(json_extract_array(VariantId)) var
+where
+	RecommenderLogId not in (
+		select distinct recItems.RecommenderLogId
+		from
+			`prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant` recItems)
+order by
+	1,
+	2;
 
 	DELETE FROM `prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant` WHERE RecommenderLogId IN (SELECT DISTINCT RecommenderLogId FROM RecommendationsDataVariantTemp);
 
