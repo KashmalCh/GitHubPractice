@@ -85,7 +85,7 @@ from(
 					'$.RecommendedProduct'))), (json_extract_array(json_extract(ResponsePayload,
 					'$.recommendedProduct'))))) as json_text
 			where
-				cast(rlstg3.LastModifiedDate as date) <= cast('2021-03-30' as date) 
+				cast(rlstg3.LastModifiedDate as date) <= cast('2021-03-30' as date)
 		),
 
 		json_array_element_table as (
