@@ -13,21 +13,13 @@ Change : Applying following New changes
 ###############################################################################################
 */
 
-  DECLARE StatusCheck string DEFAULT NULL;
-  -- variables
-  DECLARE startdatetime TIMESTAMP default TIMESTAMP(CAST(CURRENT_TIMESTAMP() AS DATETIME),'America/Chicago');
-  DECLARE rowCount INT64;
-  DECLARE message String; -- message for logging table
-  DECLARE scriptjob_id String;
-  DECLARE StageMode String ;
-  
-  SET StatusCheck =(SELECT mode FROM `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data` WHERE ConfigName = 'RecommenderLogMainRecommendations');
-  SET StageMode =(SELECT Mode FROM `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data` where ConfigName = 'RecommenderLog');
-  
-  -- INCASE OF FULL LOAD ONLY
-  IF StatusCheck = 'FullLoad' or StageMode = 'FullLoad'
-  THEN
-    TRUNCATE TABLE  `prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant`;
+	DECLARE StatusCheck string DEFAULT NULL;
+-- variables
+declare startdatetime timestamp default timestamp(cast(current_timestamp() as datetime), 'America/Chicago');
+declare rowCount int64;
+declare message string; -- message for logging table
+declare scriptjob_id string;
+declare StageMode string;
 
 	INSERT INTO
 	  `prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant` ( RecommenderLogId,
