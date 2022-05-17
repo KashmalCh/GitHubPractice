@@ -1,0 +1,183 @@
+version: 2
+
+sources:
+
+  - name: mfrm_sales_dynamic
+    database: "{{env_var('DBT_PROJECT_ID_DYNAMIC')}}"
+    dataset: mfrm_sales
+    
+    tables:
+      - name: vw_pricing_grid_day_rank
+      - name: vw_pricing_grid_category
+      - name: vw_pricing_grid_two_fyear_period
+      - name: fact_sales_line_written
+      - name: fact_sales_line_finalized
+      - name: weather_data_element_description
+      - name: weather_data_flag_description
+      - name: store_master
+      - name: product_master
+      - name: product_master_old
+      - name: fact_sales
+      - name: fact_sales_written_snapshot
+      - name: dim_calendar
+      - name: fact_store_budget
+      - name: pricing_grid_fyear_period
+      - name: fact_same_store
+      - name: fact_day_iat_inventory
+      - name: ops_facing_forecast
+      - name: vw_ssrs_rpt_axproduct_sku
+      - name: atp_first_available_dates
+      - name: vw_competitive_insights
+      - name: pricing_grid_product_sku_level_details
+      - name: es_item
+      - name: es_store
+
+
+  - name: mfrm_customer_and_social_dynamic
+    database: "{{env_var('DBT_PROJECT_ID_DYNAMIC')}}"
+    dataset: mfrm_customer_and_social
+    
+    tables: 
+      - name: customer_master
+
+
+  - name: mfrm_reporting_dataset_dynamic
+    database: "{{env_var('DBT_PROJECT_ID_DYNAMIC')}}"
+    dataset: mfrm_reporting_dataset
+    
+    tables: 
+      - name: rpt_ga_post_purchase_sessions
+
+
+
+
+
+
+  - name: mfrm_sales
+    database: mattress-firm-inc
+    dataset: mfrm_sales
+    
+
+    tables: 
+      - name: fact_sales_written_snapshot
+      - name: product_master
+      - name: store_master
+      - name: dim_calendar
+      - name: fact_sales_line_finalized
+      - name: fact_sales
+      - name: fact_door_pull_day_store
+      - name: sales_header
+      - name: sales_lines
+      
+  - name: dev_mfrm_sales
+    database: "{{env_var('DBT_PROJECT_ID')}}"
+    dataset: mfrm_sales
+
+    tables:
+      - name: vw_pricing_grid_day_rank
+      - name: vw_pricing_grid_category
+      - name: vw_pricing_grid_two_fyear_period
+      - name: fact_sales_line_written
+      - name: fact_sales_line_finalized
+      - name: weather_data_element_description
+      - name: weather_data_flag_description
+      - name: store_master
+      - name: product_master
+      - name: product_master_old
+      - name: fact_sales
+      - name: fact_sales_written_snapshot
+      - name: dim_calendar
+      - name: fact_store_budget
+      - name: pricing_grid_fyear_period
+      - name: fact_same_store
+      - name: fact_day_iat_inventory
+      - name: ops_facing_forecast
+      - name: vw_ssrs_rpt_axproduct_sku
+      - name: atp_first_available_dates
+      - name: vw_competitive_insights
+      - name: pricing_grid_product_sku_level_details
+      - name: es_item
+      - name: es_store
+
+
+  - name: mfrm_pricing_grid
+    database: dev-mfrm-data
+    dataset: mfrm_pricing_grid
+
+    tables:
+      - name: pricing_grid_finsales_history
+      - name: pricing_grid_wrsales_history
+      - name: pricing_grid_day_rank
+      - name: jobs_config_data
+
+  - name: mfrm_customer_and_social
+    database: mattress-firm-inc
+    dataset: mfrm_customer_and_social
+
+    tables: 
+      - name: customer_master
+      - name: sfmc_all_subscribers
+      - name: sfmc_unsubscribers
+
+  - name: marketing
+    database: dev-mfrm-sandbox
+    dataset: marketing
+
+    tables: 
+      - name: demo_all_customers_10272021
+      - name: demo_Nov21_customers_12012021
+      - name: demo_Dec21_customers_01052022
+      - name: demo_Jan22_customers_02012022
+
+  - name: demo_all_customer_stg_de_dup # this is the source_name
+    database: dev-mfrm-data
+    dataset: mfrm_customer_and_social
+    description: A table for customer behavior data 
+
+    tables:
+      - name: demo_all_customer_stg_de_dup # this is the table_name
+
+  - name: mfrm_segment_scores # this is the source_name
+    database: dev-mfrm-datascience
+    dataset: marketing
+    description: A table for customer behavior data 
+    
+    tables:
+      - name: mfrm_segment_scores # this is the table_name
+
+#################################### table for ES item table ##################
+  - name: dev_es_item
+    database: dev-mfrm-data
+    dataset: mfrm_sales
+    description: A table for ES item table
+
+    tables:
+      - name: es_item
+      - name: es_store
+
+  ##########customer 360 table for lead customer table ####################
+
+
+  - name: mfrm_customer_360_prod # this is the source_name
+    database: mattress-firm-inc
+    dataset: mfrm_customer_360
+    description: Adding source dataset for lead customer tables. 
+    
+    tables:
+      - name: fn_normalize_email
+      - name: fact_podium_reviews # this is the table_name
+      - name: fact_inmoment_surveys
+      - name: fact_tealium_visitor
+      - name: fact_recommenderlog
+      - name: fact_sf_live_chat_transcript
+      - name: fact_podium_messages_and_conversations
+      - name: fact_sfmc_sent_history
+      - name: fact_bazaar_voice_interaction
+
+  - name: mfrm_customer_360_dev # this is the source_name
+    database: dev-mfrm-data
+    dataset: mfrm_customer_360
+    description: Adding sfmc dev source dataset for lead customer tables. 
+    
+    tables:
+      - name: fact_sfmc_sent_history
