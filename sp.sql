@@ -24,16 +24,10 @@ declare StageMode string;
 set StatusCheck = (select mode from `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data` where ConfigName = 'RecommenderLogMainRecommendations');
 set StageMode = (select Mode from `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data` where ConfigName = 'RecommenderLog');
 
-			   -- Logging
-    set rowCount = (select @@row_count);
-    set scriptjob_id = (SELECT @@script.job_id);
-    set message = CONCAT('Before "2021-03-30T00:00:00.00" - ',scriptjob_id);
-    IF StatusCheck = 'FullLoad' THEN
-    INSERT INTO `mattress-firm-inc.mfrm_config_logging_data.logging_data`
-    ( FunctionName, ProcessedRows, FailedRows, StartDateTime, EndDateTime, Status, TargetTable, Message, JobType, Source, LogID)
-    VALUES ('sp_load_recommendation_data_variant', rowCount, 0, cast(startdatetime as string),cast(CURRENT_DATETIME('America/Chicago') as string), 'Success',
-    'mattressfinder_data.mf_recommendations_data_variant',message,StatusCheck,'mattressfinder_staging_data.mf_recommender_log_stg', CAST(FLOOR(1000*RAND()) AS STRING) || '-' || cast(CURRENT_DATETIME('America/Chicago') as string));
-    END IF;
+-- INCASE OF FULL LOAD ONLY
+IF StatusCheck = 'FullLoad' or StageMode = 'FullLoad'
+	THEN
+		TRUNCATE TABLE `prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant`;
 
 insert into
 `prod-mattressfinder-project.mattressfinder_data.mf_recommendations_data_variant` ( RecommenderLogId,
