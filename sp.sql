@@ -430,8 +430,7 @@ set
 	LastExecutionTime = (select cast(max(LastModifiedOn) as timestamp) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`),
 	Key = (select cast(max(RecommenderLogId) as string) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`)
 
- 
-     END IF;
+where ConfigName = 'RecommenderLogMainRecommendations';
 
 
 end;
