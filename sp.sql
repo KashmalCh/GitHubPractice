@@ -420,6 +420,7 @@ THEN
 	ModifiedDatetime
 	from RecommendationsDataVariantTemp;
 
+end IF;
 
 -- updating start and end date in jobs config table
 update `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data`
