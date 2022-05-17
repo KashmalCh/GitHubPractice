@@ -1,0 +1,14 @@
+version: 2
+models:
+  - name: customer_leads_cdc
+    columns:
+      - name: Email
+        description: "Email is unique key and setting the unique id with severity configuration to warn if record count is greater than 10 and error if records are greater than 1000 "
+        tests:
+          - unique:
+              config:
+                severity: error
+                error_if: ">1000"
+                warn_if: ">10"
+          - not_null
+
