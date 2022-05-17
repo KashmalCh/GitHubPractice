@@ -440,15 +440,5 @@ THEN
  
      END IF;
 
-  -- updating start and end date in jobs config table
-  UPDATE `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data`
-  SET 
-    StartDate = startdatetime,  
-    EndDate = TIMESTAMP(CAST(CURRENT_TIMESTAMP() AS DATETIME) ,'America/Chicago'),
-    LastExecutionTime = (select cast(max(LastModifiedOn) as timestamp) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`),
-    Key = (select cast(max(RecommenderLogId) as string) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`)
-    
-  WHERE ConfigName = 'RecommenderLogMainRecommendations';
-    
 
 end;
