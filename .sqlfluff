@@ -1,9 +1,8 @@
 [sqlfluff]
-verbose = 0
-nocolor = False
 dialect = bigquery
 templater = jinja
-exclude_rules = L001,L007,L008,L009,L015,L016,L024,L034,L042,L043,L044,L046,L053,L055,L056,L058,L060,L061,L062,L012,L013
+exclude_rules = L011,L012,L013,L014,L015,L016,L020,L021,L025,L026,L027,L028,L029,L031,L032,L033,L034,L035,L037,L042,L043,L044,L045,L047,L051,L053,L054,L055,L056,L057,L058,L059,L060,L061,L062
+
 
 [sqlfluff:rules]
 tab_space_size = 2
@@ -17,43 +16,14 @@ indent_unit = tab
 [sqlfluff:rules:L010]
 capitalisation_policy = lower
 
-
-[sqlfluff:rules:L011]
-aliasing = explicit
-
-#[sqlfluff:rules:L012]
-#aliasing = explicit
-
-#[sqlfluff:rules:L013]
-#allow_scalar = True
-
-[sqlfluff:rules:L014]
-extended_capitalisation_policy = pascal
-
-[sqlfluff:rules:L019]
-comma_style = leading
-
-[sqlfluff:rules:L022]
-comma_style = leading
-
 [sqlfluff:rules:L030]
 extended_capitalisation_policy = lower
-
-[sqlfluff:rules:L038]
-select_clause_trailing_comma = forbid
 
 [sqlfluff:rules:L040]
 capitalisation_policy = lower
 
-[sqlfluff:rules:L047]
-prefer_count_0 = False
-prefer_count_1 = False
-
 [sqlfluff:rules:L052]
 require_final_semicolon = False
-
-[sqlfluff:rules:L054]
-group_by_and_order_by_style = consistent
 
 [sqlfluff:rules:L063]
 extended_capitalisation_policy = lower
