@@ -427,15 +427,13 @@ THEN
 	from RecommendationsDataVariantTemp;
 
 
-   -- Logging
-	set rowCount = (select @@row_count);
-	set scriptjob_id = (SELECT @@script.job_id);
-	set message = CONCAT('After "2021-03-30T00:00:00.00" - ',scriptjob_id);
-	
-	INSERT INTO `mattress-firm-inc.mfrm_config_logging_data.logging_data`
-	( FunctionName, ProcessedRows, FailedRows, StartDateTime, EndDateTime, Status, TargetTable, Message, JobType, Source, LogID)
-	VALUES ('sp_load_recommendation_data_variant', rowCount, 0, cast(startdatetime as string),cast(CURRENT_DATETIME('America/Chicago') as string), 'Success',
-	'mattressfinder_data.mf_recommendations_data_variant',message,StatusCheck,'mattressfinder_staging_data.mf_recommender_log_stg', CAST(FLOOR(1000*RAND()) AS STRING) || '-' || cast(CURRENT_DATETIME('America/Chicago') as string));
+-- updating start and end date in jobs config table
+update `mattress-firm-inc.mfrm_config_logging_data.jobs_config_data`
+set
+	StartDate = startdatetime,
+	EndDate = timestamp(cast(current_timestamp() as datetime), 'America/Chicago'),
+	LastExecutionTime = (select cast(max(LastModifiedOn) as timestamp) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`),
+	Key = (select cast(max(RecommenderLogId) as string) from `prod-mattressfinder-project.mattressfinder_data.mf_recommender_log`)
 
  
      END IF;
