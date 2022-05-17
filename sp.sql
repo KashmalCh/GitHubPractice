@@ -9,7 +9,7 @@ Version: Initial Version
 ############## V1.1 ###########################################################################
 Date of Change: 03/01/2022, User Story : , Developer: Usama Amjad, Reviewed By : Rehan Niaz
 Change : Applying following New changes
-      1. Added new columns D365ProductID, D365RecordId
+			1. Added new columns D365ProductID, D365RecordId
 ###############################################################################################
 */
 
