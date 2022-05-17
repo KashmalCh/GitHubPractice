@@ -418,7 +418,19 @@ THEN
 	ModifiedBy,
 	CreatedDatetime,
 	ModifiedDatetime
-	from RecommendationsDataVariantTemp;
+from RecommendationsDataVariantTemp;
+
+
+-- Logging
+set rowCount = (select @@row_count);
+set scriptjob_id = (select @@script.job_id);
+set message = concat('After "2021-03-30T00:00:00.00" - ', scriptjob_id);
+
+insert into `mattress-firm-inc.mfrm_config_logging_data.logging_data`
+( FunctionName, ProcessedRows, FailedRows, StartDateTime, EndDateTime, Status, TargetTable, Message, JobType, Source, LogID)
+values ('sp_load_recommendation_data_variant', rowCount, 0, cast(startdatetime as string), cast(current_datetime('America/Chicago') as string), 'Success',
+	'mattressfinder_data.mf_recommendations_data_variant', message, StatusCheck, 'mattressfinder_staging_data.mf_recommender_log_stg', cast(floor(1000 * rand()) as string) || '-' || cast(current_datetime('America/Chicago') as string));
+
 
 end IF;
 
